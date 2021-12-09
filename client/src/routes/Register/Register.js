@@ -34,9 +34,6 @@ const Register = () => {
           },
         }),
       })
-        // axios.post('http://localhost:1337/createUser',{
-
-        // })
         .then(result => {
           console.log(result.json());
           emailRef.current.value = '';
