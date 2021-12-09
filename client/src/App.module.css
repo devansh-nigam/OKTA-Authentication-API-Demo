@@ -1,8 +1,11 @@
 .App {
   margin: 0;
-  text-align: left;
-  /* background-image: linear-gradient(#07004d, #002c77, #061826); */
-  background-image: url('./vanishingStripes.svg');
-  color: white;
+  text-align: center;
+  background-image: url('./page-turner.svg');
+  background-repeat: no-repeat;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
 }
