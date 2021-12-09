@@ -2,6 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from './../Navigation/Navbar';
 
+const loginUser = event => {
+  event.preventDefault();
+};
+
 function Login() {
   return (
     <>
@@ -13,6 +17,7 @@ function Login() {
         }}
       >
         <form
+          onSubmit={loginUser}
           style={{
             display: 'flex',
             flexDirection: 'column',

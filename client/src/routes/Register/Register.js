@@ -2,6 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from './../Navigation/Navbar';
 
+const registerUser = event => {
+  event.preventDefault();
+};
+
 function Register() {
   return (
     <>
@@ -13,6 +17,7 @@ function Register() {
         }}
       >
         <form
+          onSubmit={registerUser}
           style={{
             display: 'flex',
             flexDirection: 'column',
