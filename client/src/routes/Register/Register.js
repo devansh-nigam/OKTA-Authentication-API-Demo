@@ -1,12 +1,58 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
+import React, { useRef } from 'react';
 import Navbar from './../Navigation/Navbar';
 
-const registerUser = event => {
-  event.preventDefault();
-};
+const Register = () => {
+  const firstNameRef = useRef();
+  const lastNameRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
 
-function Register() {
+  //the first point where our frontend is gonna communicate with our backend
+  async function registerUser(event) {
+    event.preventDefault();
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+    const firstName = firstNameRef.current.value;
+    const lastName = lastNameRef.current.value;
+
+    if (email && password && firstName && lastName) {
+      await fetch('http://localhost:1337/createUser/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          profile: {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            login: email,
+          },
+          credentials: {
+            password: { value: password },
+          },
+        }),
+      })
+        // axios.post('http://localhost:1337/createUser',{
+
+        // })
+        .then(result => {
+          console.log(result.json());
+          emailRef.current.value = '';
+          passwordRef.current.value = '';
+          firstNameRef.current.value = '';
+          lastNameRef.current.value = '';
+        })
+        .catch(err => {
+          console.log(err.message);
+        });
+
+      //   const data = await response.json();
+      //   console.log(data);
+    }
+  }
+
   return (
     <>
       <Navbar />
@@ -26,16 +72,34 @@ function Register() {
           }}
         >
           <input
+            type='text'
+            name='firstName'
+            placeholder='First Name'
+            style={{ fontSize: '32px' }}
+            ref={firstNameRef}
+          />
+          <br />
+          <input
+            type='text'
+            name='lastName'
+            placeholder='Last Name'
+            style={{ fontSize: '32px' }}
+            ref={lastNameRef}
+          />
+          <br />
+          <input
             type='email'
             name='email'
             placeholder='Email'
             style={{ fontSize: '32px' }}
+            ref={emailRef}
           />
           <br />
           <input
             type='password'
             placeholder='Password'
             style={{ fontSize: '32px' }}
+            ref={passwordRef}
           />
           <br />
           <button type='submit' style={{ fontSize: '32px' }}>
@@ -45,6 +109,6 @@ function Register() {
       </div>
     </>
   );
-}
+};
 
 export default Register;
