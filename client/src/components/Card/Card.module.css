@@ -1,0 +1,22 @@
+.card {
+  /* #19323c, #171738, #002163 */
+  background-color: #000;
+  height: 500px;
+  width: 700px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 40px;
+  margin-right: 50px;
+}
+
+.logo {
+  background: url('./mmclogo.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 26px;
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  margin-top: 70px;
+}
