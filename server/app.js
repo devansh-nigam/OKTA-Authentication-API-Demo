@@ -14,10 +14,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get('/favicon.ico', (req, res) => res.status(204));
-
 //Routes which should handle requests
 //app.use('/user', userRoutes);
+
+app.get('/hello', (req, res) => {
+  res.status(200).json({ message: 'welcome devansh' });
+});
 
 //if you're reaching this middleware, then the request was not able to get through any of the get,post,patch,delete middlewares specified in those rotues above
 app.use((req, res, next) => {
