@@ -1,0 +1,8 @@
+.App {
+  margin: 0;
+  text-align: left;
+  /* background-image: linear-gradient(#07004d, #002c77, #061826); */
+  background-image: url('./vanishingStripes.svg');
+  color: white;
+  height: 100vh;
+}
