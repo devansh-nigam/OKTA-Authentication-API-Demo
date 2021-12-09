@@ -14,11 +14,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
-const createUser = require('./routes/CreateUser/CreateUserWithPassword');
+const createUserRoute = require('./routes/CreateUser/CreateUserWithPassword');
+const loginUserRoute = require('./routes/LoginUser/PrimaryAuthentication');
 
 //Routes which should handle requests
 //app.use('/user', userRoutes);
-app.use('/createUser', createUser);
+app.use('/createUser', createUserRoute);
+app.use('/loginUser', loginUserRoute);
 
 app.get('/hello', (req, res) => {
   res.status(200).json({ message: 'welcome devansh' });
