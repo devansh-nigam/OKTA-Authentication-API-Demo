@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useRef } from 'react';
 import Navbar from './../Navigation/Navbar';
 
@@ -15,26 +16,29 @@ const Register = () => {
     const firstName = firstNameRef.current.value;
     const lastName = lastNameRef.current.value;
 
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const body = JSON.stringify({
+      profile: {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        login: email,
+      },
+      credentials: {
+        password: { value: password },
+      },
+    });
+
     if (email && password && firstName && lastName) {
-      await fetch('http://localhost:1337/createUser/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          profile: {
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            login: email,
-          },
-          credentials: {
-            password: { value: password },
-          },
-        }),
-      })
+      await axios
+        .post('http://localhost:1337/createUser/', body, config)
         .then(result => {
-          console.log(result.json());
+          console.log(result.data);
           emailRef.current.value = '';
           passwordRef.current.value = '';
           firstNameRef.current.value = '';

@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import Navbar from './../Navigation/Navbar';
+import axios from 'axios';
 
 const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -60,41 +61,42 @@ const Login = () => {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
 
+    const body = JSON.stringify({
+      username: email,
+      password: password,
+      options: {
+        multiOptionalFactorEnroll: true,
+        warnBeforePasswordExpired: true,
+      },
+    });
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
     if (email && password) {
-      await fetch('http://localhost:1337/loginUser/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: email,
-          password: password,
-          options: {
-            multiOptionalFactorEnroll: true,
-            warnBeforePasswordExpired: true,
-          },
-        }),
-      })
+      await axios
+        .post('http://localhost:1337/loginUser/', body, config)
         .then(result => {
-          const data = result.json();
-          data.then(resu => {
-            if (resu.stateToken) {
-              setIsLoggedIn(true);
-              setStateToken(resu.stateToken);
-              setAuthenticationState(resu.status);
-              setEmail(resu.email);
-              setUserId(resu.userId);
-              resu.mfaFactors.map(factor => {
-                console.log(factor);
-                // mfaFactors.push(Object.entries(factor));
-                mfaFactors.push({
-                  factorType: factor.factorType,
-                  vendorName: factor.vendorName,
-                });
+          const data = result.data;
+          if (data.stateToken) {
+            setIsLoggedIn(true);
+            setStateToken(data.stateToken);
+            setAuthenticationState(data.status);
+            setEmail(data.email);
+            setUserId(data.userId);
+            data.mfaFactors.map(factor => {
+              console.log(factor);
+              // mfaFactors.push(Object.entries(factor));
+              mfaFactors.push({
+                factorType: factor.factorType,
+                vendorName: factor.vendorName,
               });
-              console.log(mfaFactors);
-            }
-          });
+            });
+            console.log(mfaFactors);
+          }
 
           emailRef.current.value = '';
           passwordRef.current.value = '';

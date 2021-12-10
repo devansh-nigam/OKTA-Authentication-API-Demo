@@ -3,6 +3,7 @@ const axios = require('axios');
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
+const cors = require('cors');
 
 const API_KEY = process.env.API_KEY;
 const URL = process.env.URL;
@@ -40,7 +41,7 @@ const loginUserUsingOkta = async (body, res) => {
     });
 };
 
-router.post('/', async (req, res) => {
+router.post('/', cors(), async (req, res) => {
   loginUserUsingOkta(req.body, res);
   //res.status(200).json({ stateToken: 'received ok' });
 });
