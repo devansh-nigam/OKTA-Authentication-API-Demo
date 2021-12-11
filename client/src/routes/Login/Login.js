@@ -70,7 +70,7 @@ const Login = () => {
     };
 
     await axios
-      .post('http://localhost:1337/loginUser/enrollMFA', body, config)
+      .post('http://localhost:1337/auth/primary/enrollMFA', body, config)
       .then(result => {
         console.log('in client logging result.data', result.data);
       });
@@ -145,7 +145,7 @@ const Login = () => {
     };
 
     await axios
-      .post('http://localhost:1337/loginUser/verifyMFA', body, config)
+      .post('http://localhost:1337/auth/primary/verifyMFA', body, config)
       .then(result => {
         console.log('verification response', result.data);
         if (result.data.status === 'SUCCESS') {
@@ -228,7 +228,7 @@ const Login = () => {
 
     if (email && password) {
       await axios
-        .post('http://localhost:1337/loginUser/', body, config)
+        .post('http://localhost:1337/auth/primary', body, config)
         .then(result => {
           const data = result.data;
           if (data.stateToken) {

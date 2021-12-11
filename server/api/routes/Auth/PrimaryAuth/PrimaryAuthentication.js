@@ -8,8 +8,8 @@ const cors = require('cors');
 const API_KEY = process.env.API_KEY;
 const URL = process.env.URL;
 
-const enrollMFARoute = require('./EnrollMFAFactor/EnrollMFAFactor');
-const verifyMFARoute = require('./VerifyMFA/VerifyMFA');
+const enrollMFARoute = require('../FactorEnrollment/EnrollMFAFactor');
+const verifyMFARoute = require('../FactorVerification/VerifyMFA');
 
 const config = {
   headers: {
