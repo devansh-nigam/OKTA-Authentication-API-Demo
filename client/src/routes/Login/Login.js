@@ -13,7 +13,7 @@ const Login = () => {
 
   const [userId, setUserId] = useState('');
 
-  const mfaFactors = [];
+  const [mfaFactors, setMfaFactors] = useState([]);
 
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -56,6 +56,156 @@ const Login = () => {
     </div>
   );
 
+  const enrollMFA = async factors => {
+    const body = JSON.stringify({
+      stateToken: stateToken,
+      factorType: factors.factorType,
+      provider: factors.vendorName,
+    });
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    await axios
+      .post('http://localhost:1337/loginUser/enrollMFA', body, config)
+      .then(result => {
+        console.log('in client logging result.data', result.data);
+      });
+  };
+
+  const mfaOptions = factors => {
+    let text = null;
+    const factor = factors.factorType;
+    const vendorName = factors.vendorName;
+
+    let onClickFunc = null;
+
+    switch (authenticationState) {
+      case 'MFA_ENROLL':
+        onClickFunc = enrollMFA;
+        break;
+
+      case 'MFA_REQUIRED':
+        onClickFunc = keepCallingVerifyMFA;
+        break;
+    }
+
+    switch (factor) {
+      case 'email':
+        text = 'Email';
+        break;
+
+      case 'sms':
+        text = 'SMS';
+        break;
+
+      case 'token:software:totp':
+        if (vendorName === 'GOOGLE') {
+          text = 'Google Authenticator';
+        } else if (vendorName === 'OKTA') {
+          text = 'OKTA Verify';
+        }
+        break;
+
+      case 'push':
+        text = `OKTA push ${vendorName}`;
+        break;
+    }
+    return text ? (
+      <button
+        style={{ alignSelf: 'center', margin: '15px', fontSize: '20px' }}
+        onClick={() => {
+          onClickFunc(factors);
+        }}
+      >
+        {text}
+      </button>
+    ) : null;
+  };
+
+  let verificationInterval = null;
+
+  const keepCallingVerifyMFA = factors => {
+    verificationInterval = setInterval(requireMFA, 3000, factors);
+  };
+
+  const requireMFA = async factors => {
+    const body = JSON.stringify({
+      stateToken: stateToken,
+      factorId: factors.factorId,
+    });
+    console.log(factors);
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    await axios
+      .post('http://localhost:1337/loginUser/verifyMFA', body, config)
+      .then(result => {
+        console.log('verification response', result.data);
+        if (result.data.status === 'SUCCESS') {
+          console.log(`VERIFICATION COMPLETE, LOGGED IN `);
+          clearInterval(verificationInterval);
+        }
+      })
+      .catch(err => {
+        console.log(err.message);
+      });
+  };
+
+  const renderUponStatus = () => {
+    let view = null;
+    switch (authenticationState) {
+      case 'MFA_ENROLL':
+        view = (
+          <div style={{ justifyContent: 'center' }}>
+            <h1>-------------------------</h1>
+            <h1>MFA_ENROLL-OPTIONS</h1>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                // justifyContent: 'center',
+              }}
+            >
+              {mfaFactors.map(factor => {
+                return mfaOptions(factor);
+              })}
+            </div>
+            <h1>-------------------------</h1>
+          </div>
+        );
+        break;
+
+      case 'MFA_REQUIRED':
+        view = (
+          <div style={{ justifyContent: 'center' }}>
+            <h1>-------------------------</h1>
+            <h1>MFA_REQUIRED-OPTIONS</h1>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                // justifyContent: 'center',
+              }}
+            >
+              {mfaFactors.map(factor => {
+                return mfaOptions(factor);
+              })}
+            </div>
+            <h1>-------------------------</h1>
+          </div>
+        );
+        break;
+    }
+    return view;
+  };
+
   async function loginUser(event) {
     event.preventDefault();
     const email = emailRef.current.value;
@@ -87,15 +237,15 @@ const Login = () => {
             setAuthenticationState(data.status);
             setEmail(data.email);
             setUserId(data.userId);
+            const temp = [];
             data.mfaFactors.map(factor => {
-              console.log(factor);
-              // mfaFactors.push(Object.entries(factor));
-              mfaFactors.push({
+              temp.push({
+                factorId: factor.id,
                 factorType: factor.factorType,
                 vendorName: factor.vendorName,
               });
             });
-            console.log(mfaFactors);
+            setMfaFactors(temp);
           }
 
           emailRef.current.value = '';
@@ -116,13 +266,13 @@ const Login = () => {
           <p>{stateToken}</p>
           <h1>Authentication Transaction State {authenticationState}</h1>
           <h1>User ID : {userId}</h1>
-          <h1>{mfaFactors}</h1>
-          {mfaFactors.forEach(factor => {
+          {/* {mfaFactors.forEach(factor => {
             for (let key in factor) {
               console.log(key, factor[key]);
               // <button style={{ fontSize: '32px' }}>{factor[key]}</button>
             }
-          })}
+          })} */}
+          {renderUponStatus()}
         </div>
       ) : (
         loginForm

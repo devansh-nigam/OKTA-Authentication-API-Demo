@@ -8,6 +8,9 @@ const cors = require('cors');
 const API_KEY = process.env.API_KEY;
 const URL = process.env.URL;
 
+const enrollMFARoute = require('./EnrollMFAFactor/EnrollMFAFactor');
+const verifyMFARoute = require('./VerifyMFA/VerifyMFA');
+
 const config = {
   headers: {
     'Content-Type': 'application/json',
@@ -40,6 +43,10 @@ const loginUserUsingOkta = async (body, res) => {
       console.log('Errorrr', err.message);
     });
 };
+
+router.use('/enrollMFA', enrollMFARoute);
+
+router.use('/verifyMFA', verifyMFARoute);
 
 router.post('/', cors(), async (req, res) => {
   loginUserUsingOkta(req.body, res);
