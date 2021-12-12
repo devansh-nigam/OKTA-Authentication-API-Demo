@@ -23,11 +23,13 @@ const enrollFactor = async (body, res) => {
     .post(`${URL}/api/v1/authn/factors`, body, config)
     .then(result => {
       const data = result.data;
-      const factorID = data._embedded.factor.id;
-      const factors = data._embedded.factor;
+      const factor = data._embedded.factor;
+      const factorID = factor.id;
+      const factorType = factor.factorType;
+      const provider = factor.provider;
 
       console.log(
-        `----------ENROLLMENT OF FACTOR ${factors.factorType} : Step 1--------`
+        `----------ENROLLMENT OF FACTOR ${factorType} : Step 1--------`
       );
       console.log(data);
       console.log(
@@ -36,35 +38,31 @@ const enrollFactor = async (body, res) => {
 
       console.log(`state token : ${data.stateToken}`);
       console.log(`factor id : ${factorID}`);
-      console.log(`provider : ${factors.provider}`);
-      console.log(`factor type : ${factors.factorType}`);
-      if (factors.factorType === 'push') {
-        //or OKTA Verify as well
+      console.log(`provider : ${provider}`);
+      console.log(`factor type : ${factorType}`);
+      if (factorType === 'push' && provider === 'OKTA') {
+        //or OKTA Verify, OKTA Push, Google Authenticator
         const qr_code =
           data._embedded.factor._embedded.activation._links.qrcode.href;
         console.log(`QR CODE LINK : ${qr_code}`);
+
         res.status(200).json({
-          message: 'FACTOR ENROLLMENT STAGE RESPONSE',
+          message: 'FACTOR ENROLLMENT STAGE RESPONSE FOR OKTA PUSH ONLY',
           stateToken: data.stateToken,
-          userId: data._embedded.user.id,
+          userId: data._embedded.user.id, //not required
           status: data.status,
-          email: data._embedded.user.profile.login,
-          factorType: data._embedded.factor.factorType,
-          factorId: data._embedded.factor.id,
+          email: data._embedded.user.profile.login, //not required
+          factorType: factorType,
+          factorId: factorID,
           qr_code_link: qr_code,
+          provider: provider,
         });
       }
       console.log(
         '------------------------------------------------------------------------'
       );
 
-      // activateFactor(
-      //   data.stateToken,
-      //   factors.provider,
-      //   factors.factorType,
-      //   factorID,
-      //   res
-      // );
+      activateFactor(data.stateToken, provider, factorType, factorID, res);
     })
     .catch(err => {
       console.log('Error from Factor Enrollment Stage', err.message);

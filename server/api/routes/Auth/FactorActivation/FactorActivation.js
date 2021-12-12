@@ -38,15 +38,35 @@ const activateFactor = async (
     )
     .then(result => {
       console.log(
-        `------------------------------------From Factor Activation--------------------------------`
+        `------------------------------------FACTOR ACTIVATION LOG--------------------------------`
       );
       console.log(result.data);
+      const data = result.data;
+      //   res
+      //     .status(200)
+      //     .json({ message: 'FACTOR ACTIVATION LOG', response: result.data });
+
+      // const qr_code =
+      //   data._embedded.factor._embedded.activation._links.qrcode.href;
+      // console.log(`QR CODE LINK : ${qr_code}`);
+
+      //   res.status(200).json({
+      //     message: `FACTOR ACTIVATION STAGE RESPONSE FOR ${provider} ${factorType}`,
+      //     stateToken: data.stateToken,
+      //     userId: data._embedded.user.id, //not required
+      //     status: data.status,
+      //     email: data._embedded.user.profile.login, //not required
+      //     factorType: factorType,
+      //     factorId: factorID,
+      //     qr_code_link: qr_code,
+      //     provider: provider,
+      //   });
       console.log(
         `-------------------------------------------------------------------------------------------`
       );
     })
     .catch(err => {
-      console.log(`Errorrrr From MFA Stage 2`, err.message);
+      console.log(`Errorrrr From MFA Factor Activation`, err.message);
     });
 };
 

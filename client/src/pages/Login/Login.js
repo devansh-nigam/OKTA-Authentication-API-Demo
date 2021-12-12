@@ -23,6 +23,8 @@ const Login = () => {
 
   const [qrCode, setQrCode] = useState('');
 
+  const [provider, setProvider] = useState('');
+
   useEffect(() => {
     renderUponStatus();
   }, [isLoggedIn, authenticationState]);
@@ -123,7 +125,8 @@ const Login = () => {
           result.data
         );
         const data = result.data;
-        console.log(`token =  ${data.stateToken}`);
+        console.log('ENROLLMENT RESPONSE', data);
+        //console.log(`token =  ${data.stateToken}`);
 
         if (data.stateToken === stateToken) {
           if (data.status === 'MFA_ENROLL_ACTIVATE') {
@@ -133,6 +136,7 @@ const Login = () => {
           setAuthenticationState(data.status);
           setQrCode(data.qr_code_link);
           setFactorType(data.factorType);
+          setProvider(data.provider);
         }
         console.log(
           '---------------------------------------------------------------------------'
@@ -232,18 +236,25 @@ const Login = () => {
                 // justifyContent: 'center',
               }}
             >
-              {factorType === 'push' && qrCode && (
-                <div
-                  style={{
-                    justifyContent: 'center',
-                  }}
-                >
-                  <h2>Scan the QR Code shown below with OKTA Verify App</h2>
-                  <div style={{ backgroundColor: '#044599', padding: '0' }}>
-                    <img src={qrCode} width='20%' height='100%' />
+              {(factorType === 'push' ||
+                factorType === 'token:software:totp') &&
+                qrCode && (
+                  <div
+                    style={{
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <h2>
+                      Scan the QR Code shown below with
+                      {provider === 'GOOGLE'
+                        ? ' Google Authenticator or OKTA Verify App'
+                        : ' OKTA Verify App'}
+                    </h2>
+                    <div style={{ backgroundColor: '#044599', padding: '0' }}>
+                      <img src={qrCode} width='20%' height='100%' />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
             <h1>-------------------------</h1>
           </div>
