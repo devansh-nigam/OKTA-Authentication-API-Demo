@@ -38,9 +38,18 @@ const verifyMFAOption = async (body, factorId, res) => {
 };
 
 router.post('/', cors(), async (req, res) => {
-  const body = JSON.stringify({
-    stateToken: req.body.stateToken,
-  });
+  let body;
+  if (req.body.factorType === 'push') {
+    body = JSON.stringify({
+      stateToken: req.body.stateToken,
+    });
+  } else {
+    body = JSON.stringify({
+      stateToken: req.body.stateToken,
+      passCode: req.body.passCode,
+    });
+  }
+
   //setInterval(verifyMFAOption, 5000, body, req.body.factorId, res);
   verifyMFAOption(body, req.body.factorId, res);
 });

@@ -157,9 +157,13 @@ const Login = () => {
 
   const requireMFA = async factors => {
     //by the time MFA_REQUIRE comes, we have factor id of the factors which were previously enrolled by the user
-    const body = JSON.stringify({
+    console.log(`in requireMFA authenticatedState = ${authenticationState}`);
+    let body;
+    body = JSON.stringify({
       stateToken: stateToken,
       factorId: factors.factorId || factorId,
+      factorType: factors.factorType || factorType,
+      // passCode: verificationRef.current.value,
     });
 
     const config = {
@@ -284,7 +288,7 @@ const Login = () => {
                     authenticationState={authenticationState}
                     factorEnroll={enrollMFA}
                     pushFactorVerify={keepCallingVerifyMFA}
-                    verify={requireMFA}
+                    verify={verifyActivateFactor}
                   />
                 );
               })}
@@ -300,6 +304,7 @@ const Login = () => {
             {factorType === 'push' && (
               <h1>Please Check your OKTA Verify app for a push notification</h1>
             )}
+            {factorType === 'email' && verificationCodeForm()}
           </div>
         );
         break;
@@ -350,16 +355,21 @@ const Login = () => {
     }
   };
 
-  const sendChallenge = async () => {};
-
   const verifyActivateFactor = event => {
-    event.preventDefault();
     switch (authenticationState) {
       case 'MFA_ENROLL_ACTIVATE':
+        event.preventDefault();
         activateFactor();
         break;
 
+      case 'MFA_REQUIRED':
+        console.log('so you have reacherd');
+        break;
+
       case 'MFA_CHALLENGE':
+        const passCode = verificationRef.current.value;
+        console.log('hello coder');
+        console.log(`passCode entered in box ${passCode}`);
         break;
     }
   };
