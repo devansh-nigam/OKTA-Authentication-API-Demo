@@ -8,8 +8,9 @@ const cors = require('cors');
 const API_KEY = process.env.API_KEY;
 const URL = process.env.URL;
 
-const enrollMFARoute = require('../FactorEnrollment/EnrollMFAFactor');
-const verifyMFARoute = require('../FactorVerification/VerifyMFA');
+const enrollMFARoute = require('../FactorEnroll/FactorEnrollment');
+const verifyMFARoute = require('../FactorVerify/FactorVerification');
+const pollForFactorRoute = require('../PollForFactorEnrollment/PollForFactorEnrollment');
 
 const config = {
   headers: {
@@ -24,7 +25,10 @@ const loginUserUsingOkta = async (body, res) => {
     .post(`${URL}/api/v1/authn`, body, config)
     .then(result => {
       const responseFromOkta = result.data;
-      console.log('Result from axios', responseFromOkta.stateToken);
+      console.log(
+        '-------------------------PRIMARY AUTHENTICATION STAGE------------------------------',
+        responseFromOkta
+      );
       if (responseFromOkta.stateToken) {
         res.status(200).json({
           stateToken: responseFromOkta.stateToken,
@@ -38,6 +42,9 @@ const loginUserUsingOkta = async (body, res) => {
         'loginResponseFromOkta.json',
         JSON.stringify(responseFromOkta)
       );
+      console.log(
+        '-----------------------------------------------------------------------------------'
+      );
     })
     .catch(err => {
       console.log('Errorrr', err.message);
@@ -47,6 +54,8 @@ const loginUserUsingOkta = async (body, res) => {
 router.use('/enrollMFA', enrollMFARoute);
 
 router.use('/verifyMFA', verifyMFARoute);
+
+router.use('/pollForFactor', pollForFactorRoute);
 
 router.post('/', cors(), async (req, res) => {
   loginUserUsingOkta(req.body, res);

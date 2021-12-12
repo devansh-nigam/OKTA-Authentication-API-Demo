@@ -19,14 +19,18 @@ const config = {
 };
 
 const verifyMFAOption = async (body, factorId, res) => {
-  console.log(`received body from client is inside verification`, body);
   await axios
     .post(`${URL}/api/v1/authn/factors/${factorId}/verify`, body, config)
     .then(result => {
-      console.log('---------HELLO----------');
+      console.log(
+        `---------VERIFICATION OF FACTOR ${factorId} : Step 2----------`
+      );
       console.log(result.data);
-      res.send(result.data);
-      console.log('----------------------');
+      console.log('---------------------------------------------------------');
+
+      const data = result.data;
+
+      res.send(data);
     })
     .catch(err => {
       console.log('Verification Error ', err.message);

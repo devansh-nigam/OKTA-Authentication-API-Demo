@@ -18,13 +18,8 @@ const createUserRoute = require('./api/routes/CreateUser/CreateUserWithPassword'
 const primaryAuth = require('./api/routes/Auth/PrimaryAuth/PrimaryAuthentication');
 
 //Routes which should handle requests
-//app.use('/user', userRoutes);
 app.use('/createUser', createUserRoute);
 app.use('/auth/primary', primaryAuth);
-
-app.get('/hello', (req, res) => {
-  res.status(200).json({ message: 'welcome devansh' });
-});
 
 //if you're reaching this middleware, then the request was not able to get through any of the get,post,patch,delete middlewares specified in those rotues above
 app.use((req, res, next) => {

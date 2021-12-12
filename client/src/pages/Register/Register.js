@@ -38,10 +38,12 @@ const Register = () => {
         .post('http://localhost:1337/createUser/', body, config)
         .then(result => {
           console.log(result.data);
-          emailRef.current.value = '';
-          passwordRef.current.value = '';
-          firstNameRef.current.value = '';
-          lastNameRef.current.value = '';
+          if (result.data.message === 'USER REGISTRATION SUCCESSFUL') {
+            emailRef.current.value = '';
+            passwordRef.current.value = '';
+            firstNameRef.current.value = '';
+            lastNameRef.current.value = '';
+          }
         })
         .catch(err => {
           console.log(err.message);

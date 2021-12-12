@@ -5,7 +5,6 @@ const router = express.Router();
 const fs = require('fs');
 
 const cors = require('cors');
-const res = require('express/lib/response');
 //i think we can remove these imports
 
 const API_KEY = process.env.API_KEY;
@@ -24,20 +23,32 @@ const createUserInOkta = async body => {
   await axios
     .post(`${URL}/api/v1/users?activate=true`, body, config)
     .then(result => {
-      console.log('Result from axios', result.data);
+      console.log(
+        '----------------------------------USER REGISTRATION LOG-------------------------------------',
+        result.data
+      );
+      console.log(
+        '--------------------------------------------------------------------------------------------'
+      );
       fs.writeFileSync(
-        'newUserResponseFromOkta.json',
+        'newUserRegistrationResponseFromOkta.json',
         JSON.stringify(result.data)
       );
     })
     .catch(err => {
-      console.log('Errorrr', err.message);
+      console.log(
+        '-------------Error from USER REGISTRATION-----------',
+        err.message
+      );
+      console.log(
+        '------------------------------------------------------------'
+      );
     });
 };
 
 router.post('/', cors(), async (req, res) => {
   createUserInOkta(req.body);
-  res.status(200).json({ message: 'received ok' });
+  res.status(200).json({ message: 'USER REGISTRATION SUCCESSFUL' });
 });
 
 module.exports = router;
