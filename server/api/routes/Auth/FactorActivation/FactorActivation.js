@@ -15,24 +15,20 @@ const config = {
   },
 };
 
-const activateFactor = async (
-  stateToken,
-  provider,
-  factorType,
-  factorId,
-  res
-) => {
+const activateFactor = async (stateToken, passCode, factorId, res) => {
   const b = JSON.stringify({
     stateToken: stateToken,
-    factorType: factorType,
-    provider: provider,
+    passCode: passCode,
   });
 
-  console.log('Body that is going to be sent to OKTA API ', b);
+  console.log(
+    'in FACTOR ACTIVATION Body that is going to be sent to OKTA API ',
+    b
+  );
 
   await axios
     .post(
-      `${URL}/api/v1/authn/factors/${factorId}/lifecycle/activate/poll`,
+      `${URL}/api/v1/authn/factors/${factorId}/lifecycle/activate`,
       b,
       config
     )
@@ -46,28 +42,36 @@ const activateFactor = async (
       //     .status(200)
       //     .json({ message: 'FACTOR ACTIVATION LOG', response: result.data });
 
-      // const qr_code =
-      //   data._embedded.factor._embedded.activation._links.qrcode.href;
-      // console.log(`QR CODE LINK : ${qr_code}`);
+      //   const qr_code =
+      //     data._embedded.factor._embedded.activation._links.qrcode.href;
+      //   console.log(`QR CODE LINK : ${qr_code}`);
 
-      //   res.status(200).json({
-      //     message: `FACTOR ACTIVATION STAGE RESPONSE FOR ${provider} ${factorType}`,
-      //     stateToken: data.stateToken,
-      //     userId: data._embedded.user.id, //not required
-      //     status: data.status,
-      //     email: data._embedded.user.profile.login, //not required
-      //     factorType: factorType,
-      //     factorId: factorID,
-      //     qr_code_link: qr_code,
-      //     provider: provider,
-      //   });
+      //     res.status(200).json({
+      //       message: `FACTOR ACTIVATION STAGE RESPONSE FOR ${provider} ${factorType}`,
+      //       stateToken: data.stateToken,
+      //       userId: data._embedded.user.id, //not required
+      //       status: data.status,
+      //       email: data._embedded.user.profile.login, //not required
+      //       factorType: factorType,
+      //       factorId: factorID,
+      //       qr_code_link: qr_code,
+      //       provider: provider,
+      //     });
       console.log(
         `-------------------------------------------------------------------------------------------`
       );
+      res.send(result.data);
     })
     .catch(err => {
       console.log(`Errorrrr From MFA Factor Activation`, err.message);
     });
 };
 
-module.exports = activateFactor;
+router.post('/', cors(), async (req, res) => {
+  const { stateToken, factorId, passCode } = req.body;
+  console.log('inside ACTIVATION METHOD');
+  console.log(req.body);
+  activateFactor(stateToken, passCode, factorId, res);
+});
+
+module.exports = router;

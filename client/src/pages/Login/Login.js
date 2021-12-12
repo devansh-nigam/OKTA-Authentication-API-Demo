@@ -31,6 +31,7 @@ const Login = () => {
 
   const emailRef = useRef();
   const passwordRef = useRef();
+  const verificationRef = useRef();
 
   const loginForm = (
     <div
@@ -137,6 +138,7 @@ const Login = () => {
           setQrCode(data.qr_code_link);
           setFactorType(data.factorType);
           setProvider(data.provider);
+          setFactorId(data.factorId);
         }
         console.log(
           '---------------------------------------------------------------------------'
@@ -157,7 +159,7 @@ const Login = () => {
     //by the time MFA_REQUIRE comes, we have factor id of the factors which were previously enrolled by the user
     const body = JSON.stringify({
       stateToken: stateToken,
-      factorId: factors.factorId,
+      factorId: factors.factorId || factorId,
     });
 
     const config = {
@@ -215,7 +217,8 @@ const Login = () => {
                     factor={factor}
                     authenticationState={authenticationState}
                     factorEnroll={enrollMFA}
-                    factorVerify={keepCallingVerifyMFA}
+                    pushFactorVerify={keepCallingVerifyMFA}
+                    verify={requireMFA}
                   />
                 );
               })}
@@ -255,6 +258,7 @@ const Login = () => {
                     </div>
                   </div>
                 )}
+              {factorType === 'email' && verificationCodeForm()}
             </div>
             <h1>-------------------------</h1>
           </div>
@@ -279,7 +283,8 @@ const Login = () => {
                     factor={factor}
                     authenticationState={authenticationState}
                     factorEnroll={enrollMFA}
-                    factorVerify={keepCallingVerifyMFA}
+                    pushFactorVerify={keepCallingVerifyMFA}
+                    verify={requireMFA}
                   />
                 );
               })}
@@ -308,6 +313,97 @@ const Login = () => {
         break;
     }
     return view;
+  };
+
+  const activateFactor = async () => {
+    console.log('going to activate the factor ', factorType);
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const passCode = verificationRef.current.value;
+    const body = JSON.stringify({
+      stateToken: stateToken,
+      passCode: passCode,
+      factorId: factorId,
+    });
+
+    console.log(`stateToken entered ${stateToken}`);
+    console.log(`passCode entered ${passCode}`);
+
+    if (passCode) {
+      await axios
+        .post('http://localhost:1337/auth/primary/activateMFA', body, config)
+        .then(result => {
+          console.log('RESPONSE received from FACTOR ACTIVATION', result.data);
+          const status = result.data.status;
+          if (status === 'MFA_ENROLL') {
+            setAuthenticationState('SUCCESS');
+          }
+        })
+        .catch(err => {
+          console.log('Inside activateFactor in client ', err.message);
+        });
+    }
+  };
+
+  const sendChallenge = async () => {};
+
+  const verifyActivateFactor = event => {
+    event.preventDefault();
+    switch (authenticationState) {
+      case 'MFA_ENROLL_ACTIVATE':
+        activateFactor();
+        break;
+
+      case 'MFA_CHALLENGE':
+        break;
+    }
+  };
+
+  const verificationCodeForm = props => {
+    return (
+      <div
+        style={{
+          width: '40%',
+          margin: '0 auto',
+        }}
+      >
+        <form
+          onSubmit={verifyActivateFactor}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignContent: 'center',
+          }}
+        >
+          <input
+            type='number'
+            name='passCode'
+            placeholder='Verification Code'
+            style={{ fontSize: '32px', fontFamily: 'Roboto' }}
+            ref={verificationRef}
+          />
+          <br />
+          <button
+            type='submit'
+            style={{
+              fontSize: '32px',
+              backgroundColor: '#044599',
+              color: 'white',
+              borderRadius: '3px',
+              fontFamily: 'Roboto',
+            }}
+          >
+            Verify
+          </button>
+        </form>
+      </div>
+    );
   };
 
   async function loginUser(event) {

@@ -14,7 +14,11 @@ const DisplayFactors = props => {
       break;
 
     case 'MFA_REQUIRED':
-      onClickFunc = props.factorVerify;
+      if (factors.factorType === 'push') {
+        onClickFunc = props.pushFactorVerify;
+      } else {
+        onClickFunc = props.verify;
+      }
       break;
   }
 

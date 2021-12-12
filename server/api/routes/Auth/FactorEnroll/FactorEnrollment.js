@@ -8,7 +8,7 @@ const cors = require('cors');
 const API_KEY = process.env.API_KEY;
 const URL = process.env.URL;
 
-const activateFactor = require('./../FactorActivation/FactorActivation');
+//const activateFactor = require('./../FactorActivation/FactorActivation');
 
 const config = {
   headers: {
@@ -18,7 +18,7 @@ const config = {
 };
 
 const enrollFactor = async (body, res) => {
-  console.log(`received body from client is`, body);
+  console.log(`received body from client in FACTOR ENROLLMENT is`, body);
   await axios
     .post(`${URL}/api/v1/authn/factors`, body, config)
     .then(result => {
@@ -40,29 +40,36 @@ const enrollFactor = async (body, res) => {
       console.log(`factor id : ${factorID}`);
       console.log(`provider : ${provider}`);
       console.log(`factor type : ${factorType}`);
-      if (factorType === 'push' && provider === 'OKTA') {
-        //or OKTA Verify, OKTA Push, Google Authenticator
-        const qr_code =
-          data._embedded.factor._embedded.activation._links.qrcode.href;
-        console.log(`QR CODE LINK : ${qr_code}`);
 
-        res.status(200).json({
-          message: 'FACTOR ENROLLMENT STAGE RESPONSE FOR OKTA PUSH ONLY',
-          stateToken: data.stateToken,
-          userId: data._embedded.user.id, //not required
-          status: data.status,
-          email: data._embedded.user.profile.login, //not required
-          factorType: factorType,
-          factorId: factorID,
-          qr_code_link: qr_code,
-          provider: provider,
-        });
+      let qr_code;
+
+      if (
+        ((factorType === 'push' || factorType === 'token:software:totp') &&
+          provider === 'OKTA') ||
+        (factorType === 'token:software:totp' && provider === 'GOOGLE')
+      ) {
+        //or OKTA Verify, OKTA Push, Google Authenticator
+        qr_code = data._embedded.factor._embedded.activation._links.qrcode.href;
+        console.log(`QR CODE LINK : ${qr_code}`);
       }
+
+      res.status(200).json({
+        message: 'FACTOR ENROLLMENT STAGE RESPONSE FOR OKTA PUSH ONLY',
+        stateToken: data.stateToken,
+        userId: data._embedded.user.id, //not required
+        status: data.status,
+        email: data._embedded.user.profile.login, //not required
+        factorType: factorType,
+        factorId: factorID,
+        qr_code_link: qr_code,
+        provider: provider,
+      });
+
       console.log(
         '------------------------------------------------------------------------'
       );
 
-      activateFactor(data.stateToken, provider, factorType, factorID, res);
+      //activateFactor(data.stateToken, provider, factorType, factorID, res);
     })
     .catch(err => {
       console.log('Error from Factor Enrollment Stage', err.message);
