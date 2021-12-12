@@ -1,6 +1,5 @@
 import axios from 'axios';
 import React, { useRef } from 'react';
-import Navbar from './../Navigation/Navbar';
 
 const Register = () => {
   const firstNameRef = useRef();
@@ -55,7 +54,6 @@ const Register = () => {
 
   return (
     <>
-      <Navbar />
       <div
         style={{
           width: '40%',
@@ -75,7 +73,7 @@ const Register = () => {
             type='text'
             name='firstName'
             placeholder='First Name'
-            style={{ fontSize: '32px' }}
+            style={{ fontSize: '32px', fontFamily: 'Roboto' }}
             ref={firstNameRef}
           />
           <br />
@@ -83,7 +81,7 @@ const Register = () => {
             type='text'
             name='lastName'
             placeholder='Last Name'
-            style={{ fontSize: '32px' }}
+            style={{ fontSize: '32px', fontFamily: 'Roboto' }}
             ref={lastNameRef}
           />
           <br />
@@ -91,18 +89,27 @@ const Register = () => {
             type='email'
             name='email'
             placeholder='Email'
-            style={{ fontSize: '32px' }}
+            style={{ fontSize: '32px', fontFamily: 'Roboto' }}
             ref={emailRef}
           />
           <br />
           <input
             type='password'
             placeholder='Password'
-            style={{ fontSize: '32px' }}
+            style={{ fontSize: '32px', fontFamily: 'Roboto' }}
             ref={passwordRef}
           />
           <br />
-          <button type='submit' style={{ fontSize: '32px' }}>
+          <button
+            type='submit'
+            style={{
+              fontSize: '32px',
+              backgroundColor: '#044599',
+              color: 'white',
+              borderRadius: '3px',
+              fontFamily: 'Roboto',
+            }}
+          >
             Register
           </button>
         </form>

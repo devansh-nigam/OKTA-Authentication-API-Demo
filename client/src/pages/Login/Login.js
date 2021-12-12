@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import Navbar from './../Navigation/Navbar';
 import axios from 'axios';
 
 const Login = () => {
@@ -38,18 +37,27 @@ const Login = () => {
           type='email'
           name='email'
           placeholder='Email'
-          style={{ fontSize: '32px' }}
+          style={{ fontSize: '32px', fontFamily: 'Roboto' }}
           ref={emailRef}
         />
         <br />
         <input
           type='password'
           placeholder='Password'
-          style={{ fontSize: '32px' }}
+          style={{ fontSize: '32px', fontFamily: 'Roboto' }}
           ref={passwordRef}
         />
         <br />
-        <button type='submit' style={{ fontSize: '32px' }}>
+        <button
+          type='submit'
+          style={{
+            fontSize: '32px',
+            backgroundColor: '#044599',
+            color: 'white',
+            borderRadius: '3px',
+            fontFamily: 'Roboto',
+          }}
+        >
           Login
         </button>
       </form>
@@ -259,7 +267,6 @@ const Login = () => {
 
   return (
     <>
-      <Navbar />
       {isLoggedIn ? (
         <div style={{ textAlign: 'center', fontSize: '32px' }}>
           <h1>State Token for {email}</h1>
