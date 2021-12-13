@@ -18,6 +18,7 @@ const MFA_REQUIRED = props => {
   const [factorOpted, setFactorOpted] = useState('');
   const [mainFactorId, setMainFactorId] = useState('');
   const [provider, setProvider] = useState('');
+  const [localAuthState, setLocalAuthState] = useState('MFA_REQUIRED');
 
   const verificationRef = useRef();
 
@@ -96,6 +97,7 @@ const MFA_REQUIRED = props => {
         const data = result.data;
         if (data.status === 'MFA_CHALLENGE' && challengeSent === false) {
           setFactorOpted(data.factorType);
+          setLocalAuthState('MFA_CHALLENGE');
           setProvider(data.provider);
           setMainFactorId(data.factorId);
           setChallengeSent(true);
@@ -242,6 +244,10 @@ const MFA_REQUIRED = props => {
 
   return (
     <div>
+      <h1 style={{ fontSize: '40px' }}>{localAuthState}</h1>
+      <p style={{ fontSize: '30px' }}>
+        ------------------------------------------
+      </p>
       {challengeSent === false ? (
         factorsPreviouslyEnrolled.map(factor => {
           return DisplayFactors(factor);

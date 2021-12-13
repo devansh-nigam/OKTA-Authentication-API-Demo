@@ -116,10 +116,12 @@ const Login = () => {
 
       case 'SUCCESS':
         view = (
-          <div>
+          <div style={{ textAlign: 'center', fontSize: '32px' }}>
+            <h1>{authenticationState}</h1>
+            <p>------------------------------------------</p>
             <h2>You've been successfully authenticated!</h2>
             <h1>Session Token for {email}</h1>
-            <h2 style={{ fontSize: '40px' }}>{sessionToken}</h2>
+            <h3>{sessionToken}</h3>
             <p>(stateToken will no longer be valid)</p>
           </div>
         );
@@ -139,8 +141,8 @@ const Login = () => {
           <p>State Token for {email}</p>
           <h1 style={{ fontSize: '40px' }}>{stateToken}</h1>
           <p>------Authentication Transaction State----</p>
-          <h1>{authenticationState}</h1>
-          <p>------------------------------------------</p>
+          {/* <h1>{authenticationState}</h1>
+          <p>------------------------------------------</p> */}
         </div>
       ) : (
         <LoginForm
