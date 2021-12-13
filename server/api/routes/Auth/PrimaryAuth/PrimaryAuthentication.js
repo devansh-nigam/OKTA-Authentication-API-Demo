@@ -37,7 +37,7 @@ const loginUserUsingOkta = async (body, res) => {
           userId: responseFromOkta._embedded.user.id,
           status: responseFromOkta.status,
           email: responseFromOkta._embedded.user.profile.login,
-          mfaFactors: responseFromOkta._embedded.factors,
+          factors: responseFromOkta._embedded.factors,
         });
       }
       fs.writeFileSync(

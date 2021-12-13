@@ -2,10 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import DisplayFactors from '../../../components/DisplayFactors/DisplayFactors';
 import LoginForm from '../../../components/LoginForm/LoginForm';
+import MFA_REQUIRED from './../../../components/MFA_REQUIRED/MFA_REQUIRED';
 
 const Login = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const [primaryAuthState, setPrimaryAuthState] = useState(false);
 
   const [stateToken, setStateToken] = useState('');
@@ -16,19 +15,23 @@ const Login = () => {
 
   const [userId, setUserId] = useState('');
 
-  const [mfaFactors, setMfaFactors] = useState([]);
+  const [mfaRequireFactors, setMfaRequireFactors] = useState(null);
 
-  const [factorType, setFactorType] = useState('');
+  const [sessionToken, setSessionToken] = useState('');
 
-  const [factorId, setFactorId] = useState('');
+  // const [mfaFactors, setMfaFactors] = useState([]);
 
-  const [qrCode, setQrCode] = useState('');
+  // const [factorType, setFactorType] = useState('');
 
-  const [provider, setProvider] = useState('');
+  // const [factorId, setFactorId] = useState('');
+
+  // const [qrCode, setQrCode] = useState('');
+
+  // const [provider, setProvider] = useState('');
 
   // useEffect(() => {
   //   renderUponStatus();
-  // }, [isLoggedIn, authenticationState]);
+  // }, [authenticationState]);
 
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -61,19 +64,30 @@ const Login = () => {
           if (data.stateToken) {
             setPrimaryAuthState(true);
             setStateToken(data.stateToken);
-            setAuthenticationState(data.status);
+
             setEmail(data.email);
             setUserId(data.userId);
-            const temp = [];
-            data.mfaFactors.map(factor => {
-              console.log(factor);
-              temp.push({
-                factorId: factor.id, //at this stage, only those factors are shown which were previoulsy enrolled in MFA list
-                factorType: factor.factorType,
-                vendorName: factor.vendorName,
-              });
-            });
-            setMfaFactors(temp);
+            console.log(data.factors);
+            if (data.status === 'MFA_REQUIRED') {
+              //then the factor received would be the one user had enrolled when he logged in the first time
+              setMfaRequireFactors(data.factors);
+              //data.factors is an array of objects so its easy to render it on screen.
+            } else if (data.status === 'MFA_ENROLL') {
+              //this is the first time login of the user, the factors would be all the options provided by the organisation that can be
+              //setup as a second authentication layer
+              //includes (1) Email (2) SMS TOTP (3) GOOGLE Auth (4) OKTA Verify (5) OKTA Push
+            }
+            setAuthenticationState(data.status);
+            // const temp = [];
+            // data.mfaFactors.map(factor => {
+            //   console.log(factor);
+            //   temp.push({
+            //     factorId: factor.id, //at this stage, only those factors are shown which were previoulsy enrolled in MFA list
+            //     factorType: factor.factorType,
+            //     vendorName: factor.vendorName,
+            //   });
+            // });
+            // setMfaFactors(temp);
           }
 
           emailRef.current.value = '';
@@ -84,6 +98,36 @@ const Login = () => {
         });
     }
   }
+
+  const renderBasedOnAuthenticationState = () => {
+    let view = null;
+
+    switch (authenticationState) {
+      case 'MFA_REQUIRED':
+        view = (
+          <MFA_REQUIRED
+            alreadyEnrolledFactors={mfaRequireFactors}
+            stateToken={stateToken}
+            setAuthenticationState={setAuthenticationState}
+            setSessionToken={setSessionToken}
+          />
+        );
+        break;
+
+      case 'SUCCESS':
+        view = (
+          <div>
+            <h2>You've been successfully authenticated!</h2>
+            <h1>Session Token for {email}</h1>
+            <h2 style={{ fontSize: '40px' }}>{sessionToken}</h2>
+            <p>(stateToken will no longer be valid)</p>
+          </div>
+        );
+        break;
+    }
+
+    return view;
+  };
 
   return (
     <>
@@ -105,6 +149,8 @@ const Login = () => {
           passRef={passwordRef}
         />
       )}
+
+      {renderBasedOnAuthenticationState()}
     </>
   );
 };

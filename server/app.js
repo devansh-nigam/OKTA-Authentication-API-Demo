@@ -18,6 +18,7 @@ const createUserRoute = require('./api/routes/CreateUser/CreateUserWithPassword'
 const primaryAuthRoute = require('./api/routes/Auth/PrimaryAuth/PrimaryAuthentication');
 const factorEnrollmentRoute = require('./api/routes/Auth/FactorEnrollment/FactorEnrollment');
 const factorActivationRoute = require('./api/routes/Auth/FactorActivation/FactorActivation');
+const factorChallengeRoute = require('./api/routes/Auth/SendChallenge/SendChallenge');
 const factorVerificationRoute = require('./api/routes/Auth/FactorVerification/FactorVerification');
 
 //Routes which should handle requests
@@ -25,6 +26,7 @@ app.use('/createUser', createUserRoute);
 app.use('/auth/primary', primaryAuthRoute);
 app.use('/enrollFactor', factorEnrollmentRoute);
 app.use('/activateFactor', factorActivationRoute);
+app.use('/sendChallenge', factorChallengeRoute);
 app.use('/verifyFactor', factorVerificationRoute);
 
 //if you're reaching this middleware, then the request was not able to get through any of the get,post,patch,delete middlewares specified in those rotues above
