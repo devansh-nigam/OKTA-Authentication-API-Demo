@@ -1,15 +1,5 @@
 import React, { useState, useRef } from 'react';
 import axios from 'axios';
-//means that the user is trying to login for nth time and now you have to let him choose which way he wants
-//authenticate himself.
-
-//from here on we send challenge to the user
-
-//4 things required to verify
-//stateToken is must
-//factorId
-//factorType
-//passCode
 
 const MFA_REQUIRED = props => {
   const factorsPreviouslyEnrolled = props.alreadyEnrolledFactors;

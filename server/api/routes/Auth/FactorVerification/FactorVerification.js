@@ -9,8 +9,6 @@ const { setInterval } = require('timers/promises');
 const API_KEY = process.env.API_KEY;
 const URL = process.env.URL;
 
-const verified = false;
-
 const config = {
   headers: {
     'Content-Type': 'application/json',
@@ -50,7 +48,6 @@ router.post('/', cors(), async (req, res) => {
     });
   }
 
-  //setInterval(verifyMFAOption, 5000, body, req.body.factorId, res);
   verifyMFAOption(body, req.body.factorId, res);
 });
 

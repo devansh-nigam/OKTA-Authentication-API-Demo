@@ -8,8 +8,6 @@ const cors = require('cors');
 const API_KEY = process.env.API_KEY;
 const URL = process.env.URL;
 
-//const activateFactor = require('./../FactorActivation/FactorActivation');
-
 const config = {
   headers: {
     'Content-Type': 'application/json',

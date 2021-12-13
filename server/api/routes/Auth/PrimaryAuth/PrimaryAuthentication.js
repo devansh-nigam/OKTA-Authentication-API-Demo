@@ -8,12 +8,6 @@ const cors = require('cors');
 const API_KEY = process.env.API_KEY;
 const URL = process.env.URL;
 
-// const enrollMFARoute = require('../FactorEnrollment/FactorEnrollment');
-// const verifyMFARoute = require('../FactorVerification/FactorVerification');
-// //const pollForFactorRoute = require('../PollForFactorEnrollment/PollForFactorEnrollment');
-// const activateMFARoute = require('../FactorActivation/FactorActivation');
-// const sendChallengeRoute = require('../SendChallenge/SendChallenge');
-
 const config = {
   headers: {
     'Content-Type': 'application/json',
@@ -53,19 +47,8 @@ const loginUserUsingOkta = async (body, res) => {
     });
 };
 
-// router.use('/enrollMFA', enrollMFARoute);
-
-// router.use('/activateMFA', activateMFARoute);
-
-// router.use('/sendChallenge', sendChallengeRoute);
-
-// router.use('/verifyMFA', verifyMFARoute);
-
-//router.use('/pollForFactor', pollForFactorRoute);
-
 router.post('/', cors(), async (req, res) => {
   loginUserUsingOkta(req.body, res);
-  //res.status(200).json({ stateToken: 'received ok' });
 });
 
 module.exports = router;

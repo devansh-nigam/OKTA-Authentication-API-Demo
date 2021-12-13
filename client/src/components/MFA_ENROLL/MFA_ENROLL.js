@@ -1,15 +1,5 @@
 import React, { useState, useRef } from 'react';
 import axios from 'axios';
-//means that the user is trying to login for nth time and now you have to let him choose which way he wants
-//authenticate himself.
-
-//from here on we send challenge to the user
-
-//4 things required to verify
-//stateToken is must
-//factorId
-//factorType
-//passCode
 
 const MFA_ENROLL = props => {
   const availableFactors = props.availableFactors;
@@ -287,9 +277,6 @@ const MFA_ENROLL = props => {
       .then(result => {
         console.log('VERIFICATION RESPONSE', result.data);
         if (result.data.status === 'MFA_ENROLL') {
-          //   setEnrollActivate(false);
-          //   props.setAuthenticationState('MFA_ENROLL');
-          //   setLocalAuthState('MFA_ENROLL');
           skipTransaction();
         }
       })

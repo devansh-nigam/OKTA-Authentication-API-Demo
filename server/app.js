@@ -6,8 +6,6 @@ const cors = require('cors');
 
 const app = express();
 
-//const userRoutes = require('./api/routes/user');
-
 //morgan is logger middleware
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -21,7 +19,6 @@ const factorActivationRoute = require('./api/routes/Auth/FactorActivation/Factor
 const factorChallengeRoute = require('./api/routes/Auth/SendChallenge/SendChallenge');
 const factorVerificationRoute = require('./api/routes/Auth/FactorVerification/FactorVerification');
 const skipTransactionRoute = require('./api/routes/Auth/SkipTransaction/SkipTransaction');
-//SkipTransaction
 
 //Routes which should handle requests
 app.use('/createUser', createUserRoute);
@@ -31,6 +28,7 @@ app.use('/activateFactor', factorActivationRoute);
 app.use('/sendChallenge', factorChallengeRoute);
 app.use('/verifyFactor', factorVerificationRoute);
 app.use('/skipTransaction', skipTransactionRoute);
+
 //if you're reaching this middleware, then the request was not able to get through any of the get,post,patch,delete middlewares specified in those rotues above
 app.use((req, res, next) => {
   const err = new Error('Not Found');

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import DisplayFactors from '../../../components/DisplayFactors/DisplayFactors';
 import LoginForm from '../../../components/LoginForm/LoginForm';
 import MFA_REQUIRED from './../../../components/MFA_REQUIRED/MFA_REQUIRED';
 import MFA_ENROLL from './../../../components/MFA_ENROLL/MFA_ENROLL';
@@ -21,20 +20,6 @@ const Login = () => {
   const [chooseFromFactors, setChooseFromFactors] = useState(null);
 
   const [sessionToken, setSessionToken] = useState('');
-
-  // const [mfaFactors, setMfaFactors] = useState([]);
-
-  // const [factorType, setFactorType] = useState('');
-
-  // const [factorId, setFactorId] = useState('');
-
-  // const [qrCode, setQrCode] = useState('');
-
-  // const [provider, setProvider] = useState('');
-
-  // useEffect(() => {
-  //   renderUponStatus();
-  // }, [authenticationState]);
 
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -78,21 +63,11 @@ const Login = () => {
             } else if (data.status === 'MFA_ENROLL') {
               //this is the first time login of the user, the factors would be all the options provided by the organisation that can be
               //setup as a second authentication layer
-              //includes (1) Email (2) SMS TOTP (3) GOOGLE Auth (4) OKTA Verify (5) OKTA Push
+              //includes (1) Email (2) SMS TOTP (3) GOOGLE Auth (4) OKTA Verify TOTP (5) OKTA Push
               console.log('inside MFA _ ENROLL in login part');
               setChooseFromFactors(data.factors);
             }
             setAuthenticationState(data.status);
-            // const temp = [];
-            // data.mfaFactors.map(factor => {
-            //   console.log(factor);
-            //   temp.push({
-            //     factorId: factor.id, //at this stage, only those factors are shown which were previoulsy enrolled in MFA list
-            //     factorType: factor.factorType,
-            //     vendorName: factor.vendorName,
-            //   });
-            // });
-            // setMfaFactors(temp);
           }
 
           emailRef.current.value = '';
@@ -157,8 +132,6 @@ const Login = () => {
           <p>State Token for {email}</p>
           <h1 style={{ fontSize: '40px' }}>{stateToken}</h1>
           <p>------Authentication Transaction State----</p>
-          {/* <h1>{authenticationState}</h1>
-          <p>------------------------------------------</p> */}
         </div>
       ) : (
         <LoginForm
