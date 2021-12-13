@@ -94,11 +94,15 @@ const MFA_REQUIRED = props => {
       .then(result => {
         console.log('RECEIVING FROM SEND CHALLENGE API ENDPOINT', result.data);
         const data = result.data;
-        if (data.message === 'CHALLENGE SENT') {
+        if (data.status === 'MFA_CHALLENGE' && challengeSent === false) {
           setFactorOpted(data.factorType);
           setProvider(data.provider);
           setMainFactorId(data.factorId);
           setChallengeSent(true);
+          //props.setAuthenticationState(data.status)
+        } else if (data.status === 'SUCCESS') {
+          props.setAuthenticationState('SUCCESS');
+          props.setSessionToken(data.sessionToken);
         }
       })
       .catch(err => {
@@ -109,9 +113,9 @@ const MFA_REQUIRED = props => {
   const VerificationView = props => {
     let helpText;
 
-    const showVerificationForm = true;
+    let showVerificationForm = true;
 
-    switch (props.factorOpted) {
+    switch (factorOpted) {
       case 'email':
         helpText =
           'Please check your mail inbox for a Verification Code from OKTA';
@@ -140,7 +144,7 @@ const MFA_REQUIRED = props => {
     return (
       <div>
         <h2>{helpText}</h2>
-        {showVerificationForm && <VerificationCodeForm />}
+        <VerificationCodeForm showInput={showVerificationForm} />
       </div>
     );
   };
@@ -162,13 +166,15 @@ const MFA_REQUIRED = props => {
             alignContent: 'center',
           }}
         >
-          <input
-            type='number'
-            name='passCode'
-            placeholder='Verification Code'
-            style={{ fontSize: '32px', fontFamily: 'Roboto' }}
-            ref={verificationRef}
-          />
+          {props.showInput && (
+            <input
+              type='number'
+              name='passCode'
+              placeholder='Verification Code'
+              style={{ fontSize: '32px', fontFamily: 'Roboto' }}
+              ref={verificationRef}
+            />
+          )}
           <br />
           <button
             type='submit'
@@ -189,20 +195,30 @@ const MFA_REQUIRED = props => {
 
   const verifyChallenge = async event => {
     event.preventDefault();
-    const passCode = verificationRef.current.value;
-    console.log(`passCode entered = ${passCode}`);
-
+    let body;
+    console.log('-----------------------------');
     console.log(`state Token = ${stateToken}`);
     console.log(`factorTypeOpted = ${factorOpted}`);
     console.log(`factorId = ${mainFactorId}`);
     console.log(`provider = ${provider}`);
+    console.log('-----------------------------');
 
-    const body = JSON.stringify({
-      stateToken: stateToken,
-      factorType: factorOpted,
-      factorId: mainFactorId,
-      passCode: passCode,
-    });
+    if (factorOpted !== 'push') {
+      const passCode = verificationRef.current.value;
+      console.log(`passCode entered = ${passCode}`);
+      body = JSON.stringify({
+        stateToken: stateToken,
+        factorType: factorOpted,
+        factorId: mainFactorId,
+        passCode: passCode,
+      });
+    } else if (factorOpted === 'push') {
+      body = JSON.stringify({
+        stateToken: stateToken,
+        factorType: factorOpted,
+        factorId: mainFactorId,
+      });
+    }
 
     await axios
       .post('http://localhost:1337/verifyFactor', body, config)

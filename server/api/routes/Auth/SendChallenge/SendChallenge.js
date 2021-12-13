@@ -31,19 +31,17 @@ const sendChallenge = async (stateToken, factorId, res) => {
     .post(`${URL}/api/v1/authn/factors/${factorId}/verify`, body, config)
     .then(result => {
       const data = result.data;
+
+      console.log('----------SEND CHALLENGE LOG----------------');
       console.log(data);
-      if (
-        data.status === 'MFA_CHALLENGE' &&
-        data.factorResult === 'CHALLENGE'
-      ) {
-        const factor = data._embedded.factor;
-        res.status(200).json({
-          message: 'CHALLENGE SENT',
-          factorType: factor.factorType,
-          provider: factor.provider,
-          factorId: factor.id,
-        });
-      }
+      console.log('--------------------------------------------');
+      const factor = data._embedded.factor;
+      res.status(200).json({
+        factorType: factor.factorType,
+        provider: factor.provider,
+        factorId: factor.id,
+        status: data.status,
+      });
     })
     .catch(err => {
       console.log('Error from SEND CHALLENGE', err.message);

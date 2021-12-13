@@ -149,8 +149,9 @@ const Login = () => {
           passRef={passwordRef}
         />
       )}
-
-      {renderBasedOnAuthenticationState()}
+      <div style={{ marginBottom: '80px' }}>
+        {renderBasedOnAuthenticationState()}
+      </div>
     </>
   );
 };
