@@ -8,11 +8,11 @@ const cors = require('cors');
 const API_KEY = process.env.API_KEY;
 const URL = process.env.URL;
 
-const enrollMFARoute = require('../FactorEnroll/FactorEnrollment');
-const verifyMFARoute = require('../FactorVerify/FactorVerification');
-//const pollForFactorRoute = require('../PollForFactorEnrollment/PollForFactorEnrollment');
-const activateMFARoute = require('../FactorActivation/FactorActivation');
-const sendChallengeRoute = require('../SendChallenge/SendChallenge');
+// const enrollMFARoute = require('../FactorEnrollment/FactorEnrollment');
+// const verifyMFARoute = require('../FactorVerification/FactorVerification');
+// //const pollForFactorRoute = require('../PollForFactorEnrollment/PollForFactorEnrollment');
+// const activateMFARoute = require('../FactorActivation/FactorActivation');
+// const sendChallengeRoute = require('../SendChallenge/SendChallenge');
 
 const config = {
   headers: {
@@ -53,13 +53,13 @@ const loginUserUsingOkta = async (body, res) => {
     });
 };
 
-router.use('/enrollMFA', enrollMFARoute);
+// router.use('/enrollMFA', enrollMFARoute);
 
-router.use('/activateMFA', activateMFARoute);
+// router.use('/activateMFA', activateMFARoute);
 
-router.use('/sendChallenge', sendChallengeRoute);
+// router.use('/sendChallenge', sendChallengeRoute);
 
-router.use('/verifyMFA', verifyMFARoute);
+// router.use('/verifyMFA', verifyMFARoute);
 
 //router.use('/pollForFactor', pollForFactorRoute);
 

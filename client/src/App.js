@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import MainHeader from './components/MainHeader/MainHeader.js';
 import Register from './pages/Register/Register';
-import Login from './pages/Login/Login';
+import Login from './pages/Login/PrimaryAuth/Login';
 import Welcome from './pages/Welcome/Welcome';
 
 function App() {
