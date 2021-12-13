@@ -54,7 +54,7 @@ const enrollFactor = async (body, res) => {
       }
 
       res.status(200).json({
-        message: 'FACTOR ENROLLMENT STAGE RESPONSE FOR OKTA PUSH ONLY',
+        message: 'FACTOR ENROLLMENT STAGE RESPONSE',
         stateToken: data.stateToken,
         userId: data._embedded.user.id, //not required
         status: data.status,

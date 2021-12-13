@@ -25,7 +25,7 @@ const activateFactor = async (stateToken, passCode, factorId, res) => {
     'in FACTOR ACTIVATION Body that is going to be sent to OKTA API ',
     b
   );
-
+  console.log(`Factor ID is ${factorId}`);
   await axios
     .post(
       `${URL}/api/v1/authn/factors/${factorId}/lifecycle/activate`,

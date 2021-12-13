@@ -3,6 +3,7 @@ import axios from 'axios';
 import DisplayFactors from '../../../components/DisplayFactors/DisplayFactors';
 import LoginForm from '../../../components/LoginForm/LoginForm';
 import MFA_REQUIRED from './../../../components/MFA_REQUIRED/MFA_REQUIRED';
+import MFA_ENROLL from './../../../components/MFA_ENROLL/MFA_ENROLL';
 
 const Login = () => {
   const [primaryAuthState, setPrimaryAuthState] = useState(false);
@@ -16,6 +17,8 @@ const Login = () => {
   const [userId, setUserId] = useState('');
 
   const [mfaRequireFactors, setMfaRequireFactors] = useState(null);
+
+  const [chooseFromFactors, setChooseFromFactors] = useState(null);
 
   const [sessionToken, setSessionToken] = useState('');
 
@@ -64,7 +67,7 @@ const Login = () => {
           if (data.stateToken) {
             setPrimaryAuthState(true);
             setStateToken(data.stateToken);
-
+            console.log(data);
             setEmail(data.email);
             setUserId(data.userId);
             console.log(data.factors);
@@ -76,6 +79,8 @@ const Login = () => {
               //this is the first time login of the user, the factors would be all the options provided by the organisation that can be
               //setup as a second authentication layer
               //includes (1) Email (2) SMS TOTP (3) GOOGLE Auth (4) OKTA Verify (5) OKTA Push
+              console.log('inside MFA _ ENROLL in login part');
+              setChooseFromFactors(data.factors);
             }
             setAuthenticationState(data.status);
             // const temp = [];
@@ -107,6 +112,17 @@ const Login = () => {
         view = (
           <MFA_REQUIRED
             alreadyEnrolledFactors={mfaRequireFactors}
+            stateToken={stateToken}
+            setAuthenticationState={setAuthenticationState}
+            setSessionToken={setSessionToken}
+          />
+        );
+        break;
+
+      case 'MFA_ENROLL':
+        view = (
+          <MFA_ENROLL
+            availableFactors={chooseFromFactors}
             stateToken={stateToken}
             setAuthenticationState={setAuthenticationState}
             setSessionToken={setSessionToken}
