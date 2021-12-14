@@ -31,7 +31,6 @@ const MFA_ENROLL = props => {
       factorId
     );
 
-    let onClickFunc = null;
     let text;
     switch (factorType) {
       case 'email':
@@ -52,6 +51,9 @@ const MFA_ENROLL = props => {
 
       case 'push':
         text = 'OKTA Push';
+        break;
+
+      default:
         break;
     }
 
@@ -153,6 +155,9 @@ const MFA_ENROLL = props => {
         showVerificationForm = false;
         showQRCode = true;
         break;
+
+      default:
+        break;
     }
 
     return (
@@ -198,7 +203,12 @@ const MFA_ENROLL = props => {
                     : ' OKTA Verify App'}
                 </h2>
                 <div style={{ backgroundColor: '#044599', padding: '0' }}>
-                  <img src={qrCode} width='20%' height='100%' />
+                  <img
+                    src={qrCode}
+                    width='20%'
+                    height='100%'
+                    alt='QR CODE DISPLAYED HERE'
+                  />
                 </div>
               </div>
             )}

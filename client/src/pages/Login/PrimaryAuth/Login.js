@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import LoginForm from '../../../components/LoginForm/LoginForm';
 import MFA_REQUIRED from './../../../components/MFA_REQUIRED/MFA_REQUIRED';
@@ -116,6 +116,9 @@ const Login = () => {
             <p>(stateToken will no longer be valid)</p>
           </div>
         );
+        break;
+
+      default:
         break;
     }
 

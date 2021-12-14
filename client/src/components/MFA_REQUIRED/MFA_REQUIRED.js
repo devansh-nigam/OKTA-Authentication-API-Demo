@@ -30,7 +30,6 @@ const MFA_REQUIRED = props => {
       factorId
     );
 
-    let onClickFunc = null;
     let text;
     switch (factorType) {
       case 'email':
@@ -51,6 +50,9 @@ const MFA_REQUIRED = props => {
 
       case 'push':
         text = 'OKTA Push';
+        break;
+
+      default:
         break;
     }
 
@@ -130,6 +132,9 @@ const MFA_REQUIRED = props => {
       case 'push':
         helpText = 'Please check your OKTA Verify App for a push notification';
         showVerificationForm = false;
+        break;
+
+      default:
         break;
     }
 

@@ -6,11 +6,8 @@ import Login from './pages/Login/PrimaryAuth/Login';
 import Welcome from './pages/Welcome/Welcome';
 
 function App() {
-  const [headerLinks, setHeaderLinks] = useState([
-    'Welcome',
-    'Login',
-    'Register',
-  ]);
+  const headerLinks = useState(['Welcome', 'Login', 'Register'])[0];
+  //[headerLinks, setHeaderLinks]
 
   return (
     <div>
