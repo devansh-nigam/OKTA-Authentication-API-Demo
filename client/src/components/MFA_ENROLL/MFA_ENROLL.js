@@ -205,7 +205,7 @@ const MFA_ENROLL = props => {
                 <div style={{ backgroundColor: '#044599', padding: '0' }}>
                   <img
                     src={qrCode}
-                    width='20%'
+                    width='80%'
                     height='100%'
                     alt='QR CODE DISPLAYED HERE'
                   />

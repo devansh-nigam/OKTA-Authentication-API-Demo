@@ -18,7 +18,7 @@ const config = {
   },
 };
 
-const createUserInOkta = async body => {
+const createUserInOkta = async (body, res) => {
   console.log(`received body is`, body);
   await axios
     .post(`${URL}/api/v1/users?activate=true`, body, config)
@@ -30,6 +30,9 @@ const createUserInOkta = async body => {
       console.log(
         '--------------------------------------------------------------------------------------------'
       );
+      if (result.data.id && result.data.status === 'ACTIVE') {
+        res.status(200).json({ message: 'USER REGISTRATION SUCCESSFUL' });
+      }
       fs.writeFileSync(
         'newUserRegistrationResponseFromOkta.json',
         JSON.stringify(result.data)
@@ -43,12 +46,14 @@ const createUserInOkta = async body => {
       console.log(
         '------------------------------------------------------------'
       );
+      res
+        .status(500)
+        .json({ message: 'USER REGISTRATION FAILED, PlEASE TRY AGAIN LATER' });
     });
 };
 
 router.post('/', cors(), async (req, res) => {
-  createUserInOkta(req.body);
-  res.status(200).json({ message: 'USER REGISTRATION SUCCESSFUL' });
+  createUserInOkta(req.body, res);
 });
 
 module.exports = router;

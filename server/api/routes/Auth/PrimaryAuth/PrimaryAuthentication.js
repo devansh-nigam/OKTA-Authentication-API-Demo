@@ -48,7 +48,15 @@ const loginUserUsingOkta = async (body, res) => {
 };
 
 router.post('/', cors(), async (req, res) => {
-  loginUserUsingOkta(req.body, res);
+  const body = JSON.stringify({
+    username: req.body.username,
+    password: req.body.password,
+    options: {
+      multiOptionalFactorEnroll: true,
+      warnBeforePasswordExpired: true,
+    },
+  });
+  loginUserUsingOkta(body, res);
 });
 
 module.exports = router;

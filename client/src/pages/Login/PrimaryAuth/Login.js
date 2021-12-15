@@ -32,10 +32,6 @@ const Login = () => {
     const body = JSON.stringify({
       username: email,
       password: password,
-      options: {
-        multiOptionalFactorEnroll: true,
-        warnBeforePasswordExpired: true,
-      },
     });
 
     const config = {
