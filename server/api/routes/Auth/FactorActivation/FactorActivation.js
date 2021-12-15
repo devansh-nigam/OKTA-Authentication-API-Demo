@@ -15,7 +15,13 @@ const config = {
   },
 };
 
-const activateFactor = async (stateToken, passCode, factorId, res) => {
+const activateFactor = async (
+  stateToken,
+  passCode,
+  factorType,
+  factorId,
+  res
+) => {
   const b = JSON.stringify({
     stateToken: stateToken,
     passCode: passCode,
@@ -25,13 +31,15 @@ const activateFactor = async (stateToken, passCode, factorId, res) => {
     'in FACTOR ACTIVATION Body that is going to be sent to OKTA API ',
     b
   );
+
+  let apiURL = `${URL}/api/v1/authn/factors/${factorId}/lifecycle/activate`;
+  if (factorType === 'push') {
+    apiURL = apiURL + '/poll';
+  }
+
   console.log(`Factor ID is ${factorId}`);
   await axios
-    .post(
-      `${URL}/api/v1/authn/factors/${factorId}/lifecycle/activate`,
-      b,
-      config
-    )
+    .post(apiURL, b, config)
     .then(result => {
       console.log(
         `------------------------------------FACTOR ACTIVATION LOG--------------------------------`
@@ -49,8 +57,8 @@ const activateFactor = async (stateToken, passCode, factorId, res) => {
 };
 
 router.post('/', cors(), async (req, res) => {
-  const { stateToken, factorId, passCode } = req.body;
-  activateFactor(stateToken, passCode, factorId, res);
+  const { stateToken, factorType, factorId, passCode } = req.body;
+  activateFactor(stateToken, passCode, factorType, factorId, res);
 });
 
 module.exports = router;
