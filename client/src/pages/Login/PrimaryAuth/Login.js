@@ -3,6 +3,7 @@ import axios from 'axios';
 import LoginForm from '../../../components/LoginForm/LoginForm';
 import MFA_REQUIRED from './../../../components/MFA_REQUIRED/MFA_REQUIRED';
 import MFA_ENROLL from './../../../components/MFA_ENROLL/MFA_ENROLL';
+import FACTORS from './../../../components/FACTORS/FACTORS';
 
 const Login = () => {
   const [primaryAuthState, setPrimaryAuthState] = useState(false);
@@ -20,6 +21,8 @@ const Login = () => {
   const [chooseFromFactors, setChooseFromFactors] = useState(null);
 
   const [sessionToken, setSessionToken] = useState('');
+
+  const [enrolledFactors, setEnrolledFactors] = useState('');
 
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -110,6 +113,7 @@ const Login = () => {
             <h1>Session Token for {email}</h1>
             <h3>{sessionToken}</h3>
             <p>(stateToken will no longer be valid)</p>
+            <FACTORS sessionToken={sessionToken} userId={userId} />
           </div>
         );
         break;
