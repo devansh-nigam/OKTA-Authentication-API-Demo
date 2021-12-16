@@ -45,6 +45,9 @@ const sendChallenge = async (stateToken, factorId, res) => {
     })
     .catch(err => {
       console.log('Error from SEND CHALLENGE', err.message);
+      res
+        .status(500)
+        .json({ message: 'CANNOT SEND CHALLENGE, PLEASE TRY AGAIN LATER' });
     });
 };
 

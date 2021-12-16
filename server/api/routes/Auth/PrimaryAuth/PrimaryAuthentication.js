@@ -43,7 +43,8 @@ const loginUserUsingOkta = async (body, res) => {
       );
     })
     .catch(err => {
-      console.log('Errorrr', err.message);
+      console.log('Error', err.message);
+      res.status(500).json({ message: 'USER LOGIN FAILED' });
     });
 };
 

@@ -53,6 +53,7 @@ const activateFactor = async (
     })
     .catch(err => {
       console.log(`Error From MFA Factor Activation`, err.message);
+      res.status(500).json({ message: 'CANNOT ACTIVATE FACTOR, TRY LATER' });
     });
 };
 
